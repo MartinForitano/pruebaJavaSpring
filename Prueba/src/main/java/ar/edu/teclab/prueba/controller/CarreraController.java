@@ -47,8 +47,10 @@ public class CarreraController {
         return carreraService.update(carrera, carreraId);
     }
 
+    
+    // TODO: Consultar sobre metodo a utilizar: Delete o put?
     @DeleteMapping("/{carreraId}")
-    public ResponseEntity<Object> update(@PathVariable int carreraId) {
+    public ResponseEntity<Object> delete(@PathVariable int carreraId) {
         return carreraService.delete(carreraId);
     }
 }

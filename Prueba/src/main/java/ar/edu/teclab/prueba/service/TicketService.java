@@ -31,31 +31,39 @@ public class TicketService {
     private String password;
 
     public ResponseEntity<Object> findComments(Long ticketId) {
-        String pathComments = API_URL + ticketId + "/comments";
-        String credentials = username + ":" + password;
-        String credentialsEncoded = Base64.getEncoder().encodeToString(credentials.getBytes());
+        try {
+            String pathComments = API_URL + ticketId + "/comments";
+            String credentials = username + ":" + password;
+            String credentialsEncoded = Base64.getEncoder().encodeToString(credentials.getBytes());
 
-        //https://www.baeldung.com/how-to-use-resttemplate-with-basic-authentication-in-spring
-        // create headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic " + credentialsEncoded);
+            //https://www.baeldung.com/how-to-use-resttemplate-with-basic-authentication-in-spring
+            // create headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", "Basic " + credentialsEncoded);
 
-        // create request
-        HttpEntity request = new HttpEntity(headers);
-        RestTemplate template = new RestTemplate();
-        ResponseEntity<String> exchange = template.exchange(pathComments, HttpMethod.GET, request, String.class);
-        return new ResponseEntity<>(exchange.getBody(), HttpStatus.OK);
+            // create request
+            HttpEntity request = new HttpEntity(headers);
+            RestTemplate template = new RestTemplate();
+            ResponseEntity<String> exchange = template.exchange(pathComments, HttpMethod.GET, request, String.class);
+            return new ResponseEntity<>(exchange.getBody(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Ocurrio un error. Excepcion:  " + e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<Object> makeCommentInTicket(Long ticketId, String comment) {
-        String pathComments = API_URL + ticketId;
-        String credentials = username + ":" + password;
-        String credentialsEncoded = Base64.getEncoder().encodeToString(credentials.getBytes());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic " + credentialsEncoded);
-        HttpEntity request = new HttpEntity<>(comment, headers);
-        RestTemplate template = new RestTemplate();
-        ResponseEntity<String> exchange = template.exchange(pathComments, HttpMethod.PUT, request, String.class);
-        return new ResponseEntity<>(exchange.getBody(), HttpStatus.OK);
+        try {
+            String pathComments = API_URL + ticketId;
+            String credentials = username + ":" + password;
+            String credentialsEncoded = Base64.getEncoder().encodeToString(credentials.getBytes());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", "Basic " + credentialsEncoded);
+            HttpEntity request = new HttpEntity<>(comment, headers);
+            RestTemplate template = new RestTemplate();
+            ResponseEntity<String> exchange = template.exchange(pathComments, HttpMethod.PUT, request, String.class);
+            return new ResponseEntity<>(exchange.getBody(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Ocurrio un error. Excepcion:  " + e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

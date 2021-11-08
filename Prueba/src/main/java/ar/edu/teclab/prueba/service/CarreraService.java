@@ -21,16 +21,24 @@ public class CarreraService {
     private CarreraRepository carreraRepository;
 
     public ResponseEntity<Object> findAll() {
-        List<Carrera> list = carreraRepository.findAll();
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        try {
+            List<Carrera> list = carreraRepository.findAll();
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Ocurrio un error. Excepcion:  " + e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<Object> findById(int id) {
-        Carrera c = carreraRepository.findOne(id);
-        if (c == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            Carrera c = carreraRepository.findOne(id);
+            if (c == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return new ResponseEntity<>(c, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Ocurrio un error. Excepcion:  " + e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(c, HttpStatus.OK);
     }
 
     /*public ResponseEntity<Object> create(Carrera carrera) {
@@ -38,39 +46,51 @@ public class CarreraService {
     }
      */
     public ResponseEntity<Object> create(CarreraDTO carreraDTO) {
-        Carrera carrera = new Carrera();
-        carrera.setCantMaterias(carreraDTO.getCantMaterias());
-        carrera.setDescripcion(carreraDTO.getDescripcion());
-        carrera.setFacultad(carreraDTO.getFacultad());
-        carrera.setUniversidad(carreraDTO.getUniversidad());
-        carrera.setPlanEstudio(carreraDTO.getPlanEstudio());
-        carreraRepository.saveAndFlush(carrera);
-        return new ResponseEntity("Carrera registrada exitosamente", HttpStatus.CREATED);
-    }
-
-    public ResponseEntity<Object> update(CarreraDTO carreraDTO, int id) {
-        Carrera carrera = carreraRepository.findOne(id);
-        if (carrera != null) {
+        try {
+            Carrera carrera = new Carrera();
             carrera.setCantMaterias(carreraDTO.getCantMaterias());
             carrera.setDescripcion(carreraDTO.getDescripcion());
             carrera.setFacultad(carreraDTO.getFacultad());
             carrera.setUniversidad(carreraDTO.getUniversidad());
             carrera.setPlanEstudio(carreraDTO.getPlanEstudio());
             carreraRepository.saveAndFlush(carrera);
-            return new ResponseEntity("Datos de carrera modificados con exito", HttpStatus.OK);
-        } else {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity("Carrera registrada exitosamente", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Ocurrio un error. Excepcion:  " + e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<Object> update(CarreraDTO carreraDTO, int id) {
+        try {
+            Carrera carrera = carreraRepository.findOne(id);
+            if (carrera != null) {
+                carrera.setCantMaterias(carreraDTO.getCantMaterias());
+                carrera.setDescripcion(carreraDTO.getDescripcion());
+                carrera.setFacultad(carreraDTO.getFacultad());
+                carrera.setUniversidad(carreraDTO.getUniversidad());
+                carrera.setPlanEstudio(carreraDTO.getPlanEstudio());
+                carreraRepository.saveAndFlush(carrera);
+                return new ResponseEntity("Datos de carrera modificados con exito", HttpStatus.OK);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Ocurrio un error. Excepcion:  " + e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     //Eliminacion fisica!!
     public ResponseEntity<Object> delete(int id) {
-        Carrera carrera = carreraRepository.findOne(id);
-        if (carrera != null) {
-            carreraRepository.delete(id);
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            Carrera carrera = carreraRepository.findOne(id);
+            if (carrera != null) {
+                carreraRepository.delete(id);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+            return new ResponseEntity("Datos de carrera eliminados con exito", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Ocurrio un error. Excepcion:  " + e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity("Datos de carrera eliminados con exito", HttpStatus.OK);
     }
 }
